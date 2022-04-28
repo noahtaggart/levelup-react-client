@@ -47,3 +47,26 @@ export const deleteEvent = (eventId, setRefreshState) => {
     })
     .then(() => setRefreshState(true))
 }
+
+export const leaveEvent = (eventId, setRefreshState) => {
+    return fetch(`http://localhost:8000/events/${eventId}/leave`, {
+        method: "DELETE", 
+        headers:{
+            "Content-Type": "application/json",
+            "Authorization": `Token ${localStorage.getItem("lu_token")}`
+        },
+    })
+    .then(() => setRefreshState(true))
+}
+export const signUpEvent = (eventId, setRefreshState) => {
+    return fetch(`http://localhost:8000/events/${eventId}/signup`, {
+        method: "POST", 
+        headers:{
+            "Content-Type": "application/json",
+            "Authorization": `Token ${localStorage.getItem("lu_token")}`
+        },
+    })
+    .then(() => setRefreshState(true))
+}
+
+
