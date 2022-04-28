@@ -47,3 +47,14 @@ export const updateGame = (game, gameId) => {
         body: JSON.stringify(game)
     })
 }
+
+export const deleteGame = (gameId, setRefreshState) => {
+    return fetch(`http://localhost:8000/games/${gameId}`, {
+        method: "DELETE", 
+        headers:{
+            "Content-Type": "application/json",
+            "Authorization": `Token ${localStorage.getItem("lu_token")}`
+        },
+    })
+    .then(() => setRefreshState(true))
+}
