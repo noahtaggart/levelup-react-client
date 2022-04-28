@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from "react"
+import { useParams } from "react-router-dom"
 import { useHistory } from 'react-router-dom'
-import { createEvent } from "./EventManager"
 import { getGames } from "../game/GameManager"
+import { getSingleEvent, updateEvent } from "./EventManager"
 
 
-export const EventForm = () => {
+export const EditEvent = () => {
     const history = useHistory()
-
-
-
-    /*
-        Since the input fields are bound to the values of
-        the properties of this state variable, you need to
-        provide some default values.
-    */
-    const [currentEvent, setCurrentEvent] = useState({
-        game: null,
-        description:""
-    })
-
+    const {eventId} = useParams()
+    const [originalEvent, setOriginalEvent] = useState({game: {id:0}})
+    const [currentEvent, setCurrentEvent] = useState({})
     const [allGames, updateGames] = useState([])
 
     useEffect(() => {
         getGames()
         .then(data => updateGames(data))
+        getSingleEvent(eventId)
+        .then(data => setOriginalEvent(data))
     }, [])
+
+    useEffect(() => {
+        const copy = {...originalEvent}
+        copy.description = originalEvent.description
+        copy.game = originalEvent.game.id
+        copy.date = originalEvent.date
+        copy.time = originalEvent.time
+        setCurrentEvent(copy)
+    }, [originalEvent])
 
     const changeEventState = (e) => {
         const copy = {...currentEvent}
@@ -41,9 +43,6 @@ export const EventForm = () => {
         setCurrentEvent(copy)
     }
 
-
-
-
     return (
         <form className="eventForm">
             <h2 className="eventForm__description">Register New event</h2>
@@ -58,9 +57,8 @@ export const EventForm = () => {
                 <div className="form-group">
                     <label htmlFor="game">Game: </label>
                     <select name="game" required autoFocus className="form-control"
-                        defaultValue={currentEvent.game}
-                        onChange={changeEventState}>
-                            <option value="0" hidden>Select a game...</option>
+                        onChange={changeEventState}
+                            value={currentEvent.game}>
                             {allGames.map(game => {
                                 return <option key={`game--${game.id}`} value={game.id}>{game.title}</option>
                             })}
@@ -96,10 +94,13 @@ export const EventForm = () => {
                     }
 
                     // Send POST request to your API
-                    createEvent(event)
+                    updateEvent(event, parseInt(eventId))
                         .then(() => history.push("/events"))
                 }}
-                className="btn btn-primary">Create</button>
+                className="btn btn-primary">Update</button>
         </form>
     )
+
+
+
 }

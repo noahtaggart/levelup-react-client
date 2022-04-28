@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { getGames } from "./GameManager.js"
 
 export const GameList = (props) => {
@@ -12,11 +13,13 @@ export const GameList = (props) => {
         <article className="games">
             {
                 games.map(game => {
-                    return <section key={`game--${game.id}`} className="game">
+                    return <>
+                    <section key={`game--${game.id}`} className="game">
                         <div className="game__title">{game.title} by {game.maker}</div>
                         <div className="game__players">{game.number_of_players} players needed</div>
                         <div className="game__skillLevel">Skill level is {game.skill_level}</div>
-                    </section>
+                    </section><button><Link to={`/games/${game.id}/edit`}>edit</Link></button>
+                    </>
                 })
             }
             <button className="btn btn-2 btn-sep icon-create"
